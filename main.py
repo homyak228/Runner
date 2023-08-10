@@ -14,10 +14,13 @@ BG = pygame.image.load("images/BG.png").convert()
 lives = 3
 animation_frame = 0
 BG_X = 0
+jump_count = 8
+is_jump = False
+player_y = 330
 
 clock = pygame.time.Clock()
 
-def draw_hearts(lives):
+def draw_hearts(lives: int):
     for x in range(lives):
         window.blit(heart, (x * 55, 5))
 
@@ -29,9 +32,26 @@ while running:
 
     window.blit(BG, (BG_X + 600, 0))
     window.blit(BG, (BG_X, 0))
-    window.blit(player[animation_frame], (100, 330))
+    window.blit(player[animation_frame], (100, player_y))
     draw_hearts(lives)
     pygame.display.update()
+
+    keys = pygame.key.get_pressed()
+
+    # Jumping
+    if not is_jump:
+        if keys[pygame.K_SPACE]:
+            is_jump = True
+    else:
+        if jump_count >= -8:
+            if jump_count > 0:
+                player_y -= (jump_count ** 2) / 2
+            else:
+                player_y += (jump_count ** 2) / 2
+            jump_count -= 1
+        else:
+            is_jump = False
+            jump_count = 8
 
     clock.tick(10)
 
