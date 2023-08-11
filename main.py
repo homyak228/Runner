@@ -11,7 +11,7 @@ heart = pygame.transform.scale(pygame.image.load("images/GUI/Heart.png").convert
 player = [pygame.transform.scale(pygame.image.load("images/Player/Player1.png").convert_alpha(), (70, 70)),
           pygame.transform.scale(pygame.image.load("images/Player/Player2.png").convert_alpha(), (70, 70))]
 # BG images
-BG = pygame.image.load("images/BG.png").convert()
+BG = pygame.image.load("images/BG.png").convert_alpha()
 Clouds = pygame.image.load("images/Clouds.png").convert_alpha()
 Grass = pygame.image.load("images/Grass.png").convert_alpha()
 Mountians = pygame.image.load("images/Mountians.png").convert_alpha()
@@ -32,8 +32,8 @@ Trees_X = 0
 jump_sounds = [pygame.mixer.Sound("Sounds/Jump1.wav"),
                pygame.mixer.Sound("Sounds/Jump2.wav"),
                pygame.mixer.Sound("Sounds/Jump3.wav")]
-BG_Music = pygame.mixer.Sound("Sounds/BG.wav")
-BG_Music.play(-1)
+music = pygame.mixer.Sound("Sounds/BG.mp3")
+music.play(-1)
 
 clock = pygame.time.Clock()
 
@@ -58,7 +58,7 @@ while running:
     window.blit(Trees, (Trees_X, 0))
     window.blit(Clouds, (Clouds_X + 600, 0))
     window.blit(Clouds, (Clouds_X, 0))
-    # Drawing other
+    #  Drawing other
     window.blit(player[animation_frame], (100, player_y))
     draw_hearts(lives)
     pygame.display.update()
