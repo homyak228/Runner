@@ -1,39 +1,46 @@
 import pygame
-
+from random import randint
+# Settings
 pygame.init()
 
 window = pygame.display.set_mode((600, 480))
 pygame.display.set_caption("Runner")
 pygame.display.set_icon(pygame.image.load("images/GUI/icon.png").convert_alpha())
-
+# Player Images
 heart = pygame.transform.scale(pygame.image.load("images/GUI/Heart.png").convert_alpha(), (50, 50))
 player = [pygame.transform.scale(pygame.image.load("images/Player/Player1.png").convert_alpha(), (70, 70)),
           pygame.transform.scale(pygame.image.load("images/Player/Player2.png").convert_alpha(), (70, 70))]
-
+# BG images
 BG = pygame.image.load("images/BG.png").convert()
 Clouds = pygame.image.load("images/Clouds.png").convert_alpha()
 Grass = pygame.image.load("images/Grass.png").convert_alpha()
 Mountians = pygame.image.load("images/Mountians.png").convert_alpha()
 Trees = pygame.image.load("images/Trees.png").convert_alpha()
-
+# Player variables
 lives = 3
 animation_frame = 0
 jump_count = 8
 is_jump = False
 player_y = 330
-
+# BG variables
 BG_X = 0
 Clouds_X = 0
 Grass_X = 0
 Mountians_X = 0
 Trees_X = 0
+# Sounds
+jump_sounds = [pygame.mixer.Sound("Sounds/Jump1.wav"),
+               pygame.mixer.Sound("Sounds/Jump2.wav"),
+               pygame.mixer.Sound("Sounds/Jump3.wav")]
+BG_Music = pygame.mixer.Sound("Sounds/BG.wav")
+BG_Music.play(-1)
 
 clock = pygame.time.Clock()
 
 def draw_hearts(lives: int):
     for x in range(lives):
         window.blit(heart, (x * 55, 5))
-
+# Main cycle
 running = True
 while running:
     for event in pygame.event.get():
@@ -51,7 +58,7 @@ while running:
     window.blit(Trees, (Trees_X, 0))
     window.blit(Clouds, (Clouds_X + 600, 0))
     window.blit(Clouds, (Clouds_X, 0))
-
+    # Drawing other
     window.blit(player[animation_frame], (100, player_y))
     draw_hearts(lives)
     pygame.display.update()
@@ -62,6 +69,7 @@ while running:
     if not is_jump:
         if keys[pygame.K_SPACE]:
             is_jump = True
+            jump_sounds[randint(0, 2)].play()
     else:
         if jump_count >= -8:
             if jump_count > 0:
@@ -74,7 +82,7 @@ while running:
             jump_count = 8
 
     clock.tick(10)
-
+    # Moving BG
     BG_X += -1.0
     Mountians_X += -2.5
     Grass_X += -3.5
@@ -95,5 +103,5 @@ while running:
         Grass_X = 0
     if Trees_X <= -600:
         Trees_X = 0
-
+# Ending game
 pygame.quit()
