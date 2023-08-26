@@ -8,8 +8,12 @@ pygame.display.set_caption("Runner")
 pygame.display.set_icon(pygame.image.load("images/GUI/icon.png").convert_alpha())
 # Player Images
 heart = pygame.transform.scale(pygame.image.load("images/GUI/Heart.png").convert_alpha(), (50, 50))
-player = [pygame.transform.scale(pygame.image.load("images/Player/Player1.png").convert_alpha(), (70, 70)),
-          pygame.transform.scale(pygame.image.load("images/Player/Player2.png").convert_alpha(), (70, 70))]
+player = [pygame.transform.scale(pygame.image.load("images/Player/Player1.png").convert_alpha(), (40, 70)),
+          pygame.transform.scale(pygame.image.load("images/Player/Player2.png").convert_alpha(), (40, 70))]
+# Enemy settings
+enemy = pygame.transform.scale(pygame.image.load("images/Enemy.png").convert_alpha(), (50, 70))
+enemy_timer = pygame.USEREVENT + 1
+enemies_in_game = []
 # BG images
 BG = pygame.image.load("images/BG.png").convert_alpha()
 Clouds = pygame.image.load("images/Clouds.png").convert_alpha()
@@ -35,8 +39,11 @@ jump_sounds = [pygame.mixer.Sound("Sounds/Jump1.wav"),
 music = pygame.mixer.Sound("Sounds/BG.mp3")
 music.play(-1)
 
+score = 0
+main_font = pygame.font.Font("Other/Kanit-Black.ttf", 40)
+message = main_font.render("Score: " + str(score), False, (0, 0, 0))
 clock = pygame.time.Clock()
-
+pygame.time.set_timer(enemy_timer, randint(2000, 3000))
 def draw_hearts(lives: int):
     for x in range(lives):
         window.blit(heart, (x * 55, 5))
@@ -46,7 +53,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == enemy_timer:
+            enemies_in_game.append(enemy.get_rect(topleft=(650, 330)))
+            pygame.time.set_timer(enemy_timer, randint(1700, 3000))
 
+    player_collider = player[animation_frame].get_rect(topleft=(100, player_y))
     # Drawing BG
     window.blit(BG, (BG_X + 600, 0))
     window.blit(BG, (BG_X, 0))
@@ -59,9 +70,16 @@ while running:
     window.blit(Clouds, (Clouds_X + 600, 0))
     window.blit(Clouds, (Clouds_X, 0))
     #  Drawing other
+    if enemies_in_game:
+        for el in enemies_in_game:
+            window.blit(enemy, el)
+            el.x -= 10
+            if player_collider.colliderect(el):
+                lives -= 1
     window.blit(player[animation_frame], (100, player_y))
     draw_hearts(lives)
     pygame.display.update()
+    window.blit(message, (0, 0))
 
     keys = pygame.key.get_pressed()
 
@@ -103,5 +121,8 @@ while running:
         Grass_X = 0
     if Trees_X <= -600:
         Trees_X = 0
+    # Lives check
+    if lives <= 0:
+        pygame.quit()
 # Ending game
 pygame.quit()
